@@ -14,8 +14,8 @@ const io = new Server(server, { cors: { origin: "*" } });
 app.use(cors());
 app.use(express.json());
 
-// Serve static frontend files from ../frontend/public (stepping out of backend folder)
-app.use(express.static(path.join(__dirname, '../frontend/public')));
+// Serve static frontend files directly from frontend/public
+app.use(express.static(path.join(__dirname, 'frontend/public')));
 
 // 1. Connect to MongoDB Atlas & Seed Data if empty
 mongoose.connect(process.env.MONGO_URI)
@@ -202,7 +202,7 @@ app.get('/api/reset-seats', async (req, res) => {
 
 // Explicit root route serving index.html from frontend/public
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '../frontend/public', 'index.html'));
+  res.sendFile(path.join(__dirname, 'frontend/public', 'index.html'));
 });
 
 // 5. Socket.io Real-Time Connection
