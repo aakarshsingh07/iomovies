@@ -1,4 +1,5 @@
-const router = require('express').Router();
+const express = require('express');
+const router = express.Router();
 const Movie = require('../models/Movie');
 const Showtime = require('../models/Showtime');
 
@@ -12,25 +13,18 @@ router.get('/', async (req, res) => {
   }
 });
 
-// Get movie details and its showtimes
+// Get a single movie by ID along with its showtimes
 router.get('/:id', async (req, res) => {
   try {
     const movie = await Movie.findById(req.params.id);
-    if (!movie) return res.status(404).json({ error: 'Movie not found' });
-
+    if (!movie) {
+      return res.status(404).json({ error: 'Movie not found' });
+    }
+    
+    // Fetch related showtimes
     const showtimes = await Showtime.find({ movieId: movie._id });
+    
     res.json({ movie, showtimes });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// Get specific showtime details (for seat mapping)
-router.get('/showtime/:showtimeId', async (req, res) => {
-  try {
-    const showtime = await Showtime.findById(req.params.showtimeId).populate('movieId');
-    if (!showtime) return res.status(404).json({ error: 'Showtime not found' });
-    res.json(showtime);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
